@@ -1,0 +1,139 @@
+/* ================================================
+   Mahmoud Morsy // Portfolio — Custom styles
+   - Softened green + warm red/white palette
+   - Inter for body, JetBrains Mono for accents
+   - Slow, eye-friendly animations
+   ================================================ */
+
+/* Smooth scroll for in-page anchors */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+}
+
+/* Body base */
+body {
+    background-color: #0b0d0f;
+    color: #e6e8ea;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Very subtle vignette */
+    background-image:
+        radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%);
+    background-attachment: fixed;
+    line-height: 1.65;
+    letter-spacing: 0.005em;
+}
+
+/* Custom scrollbar (Webkit) — softened */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #05070a;
+    border-left: 1px solid rgba(124, 255, 158, 0.1);
+}
+::-webkit-scrollbar-thumb {
+    background: #1f7a48;
+    border: 1px solid #3aa868;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3aa868;
+}
+
+/* Firefox scrollbar */
+html {
+    scrollbar-color: #1f7a48 #05070a;
+    scrollbar-width: thin;
+}
+
+/* Subtle scanline overlay (much fainter than before) */
+.scanline-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 60;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0px,
+        rgba(0, 0, 0, 0) 3px,
+        rgba(124, 255, 158, 0.015) 4px,
+        rgba(0, 0, 0, 0) 5px
+    );
+    mix-blend-mode: overlay;
+}
+
+/* Project card hover lift + soft glow (no harsh brightness) */
+.project-card {
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+    will-change: transform;
+}
+
+.project-card:hover,
+.project-card:focus-within {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(255, 107, 122, 0.12), 0 0 0 1px rgba(255, 107, 122, 0.3);
+    border-color: rgba(255, 107, 122, 0.5);
+    background-color: #161b20;
+}
+
+/* Filter button active-state — soft rose glow */
+.filter-btn.is-active,
+.skill-btn.is-active {
+    box-shadow: 0 0 8px rgba(255, 107, 122, 0.3);
+}
+
+/* Make sure focus rings are NEVER suppressed */
+*:focus-visible {
+    outline: none;
+}
+
+/* Respect reduced motion (accessibility) */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+    .scanline-overlay {
+        display: none;
+    }
+}
+
+/* Form input placeholder */
+input::placeholder,
+textarea::placeholder {
+    color: #8b9099;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* kbd styling */
+kbd {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    background: rgba(124, 255, 158, 0.05);
+}
+
+/* Better selection color */
+::selection {
+    background: #ff6b7a;
+    color: #fff;
+}
+
+/* Headings get a tighter, cleaner look */
+h1, h2, h3 {
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+/* Body text gets a little extra breathing room */
+p {
+    margin-bottom: 1rem;
+}

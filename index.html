@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahmoud Morsy // Portfolio Terminal</title>
+    <meta name="description" content="Personal portfolio of Mahmoud Morsy — Full-Stack Developer &amp; Security Researcher.">
+
+    <!-- Inter for readable body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Softened, eye-friendly green (was the harsh #39FF14)
+                        neon: {
+                            DEFAULT: '#7CFF9E',
+                            dim:     '#5fd989',
+                            dark:    '#3aa868',
+                            deep:    '#1f7a48',
+                        },
+                        // Warm light-red accent
+                        rose: {
+                            DEFAULT: '#ff6b7a',
+                            soft:    '#ffb3bc',
+                            dim:     '#d94a59',
+                            dark:    '#8a2a35',
+                        },
+                        // Readable off-whites (avoid pure #FFF eye-strain on black)
+                        ink: {
+                            DEFAULT: '#e6e8ea',
+                            dim:     '#b9bdc2',
+                            soft:    '#8b9099',
+                        },
+                        bg: {
+                            DEFAULT: '#0b0d0f',
+                            card:    '#12161a',
+                            deep:    '#05070a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', '"Courier New"', 'Courier', 'monospace'],
+                    },
+                    boxShadow: {
+                        'neon':    '0 0 5px rgba(124,255,158,0.6), 0 0 14px rgba(124,255,158,0.35)',
+                        'neon-sm': '0 0 3px rgba(124,255,158,0.5), 0 0 8px rgba(124,255,158,0.25)',
+                        'rose':    '0 0 5px rgba(255,107,122,0.55), 0 0 14px rgba(255,107,122,0.3)',
+                    },
+                    keyframes: {
+                        blink:  { '0%, 49%': { opacity: '1' }, '50%, 100%': { opacity: '0' } },
+                        breathe: {
+                            '0%, 100%': { opacity: '0.85' },
+                            '50%':      { opacity: '1' },
+                        },
+                        drift: {
+                            '0%':   { transform: 'translateY(0)' },
+                            '50%':  { transform: 'translateY(-4px)' },
+                            '100%': { transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        blink:   'blink 1.1s step-end infinite',
+                        breathe: 'breathe 4s ease-in-out infinite',
+                        drift:   'drift 6s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-bg text-ink font-sans min-h-screen overflow-x-hidden selection:bg-rose selection:text-white">
+
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content"
+       class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-neon focus:text-black focus:px-4 focus:py-2 focus:ring-2 focus:ring-white rounded">
+        Skip to main content
+    </a>
+
+    <!-- Scanline Overlay (very subtle now) -->
+    <div class="scanline-overlay" aria-hidden="true"></div>
+
+    <!-- ========== NAVBAR ========== -->
+    <header>
+        <nav role="navigation" aria-label="Main navigation"
+             class="fixed top-0 left-0 w-full z-40 bg-bg-deep/85 backdrop-blur border-b border-neon/25">
+
+            <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+                <a href="#home"
+                   class="text-ink font-mono text-base sm:text-lg font-semibold tracking-wider focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg-deep rounded px-1"
+                   aria-label="Go to home section">
+                    <span class="text-rose" aria-hidden="true">&gt;</span>
+                    <span class="text-ink">Mahmoud's portfolio</span><span class="text-neon">_</span>
+                    <span class="inline-block w-2 h-4 bg-rose align-middle ml-1 animate-blink" aria-hidden="true"></span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <ul class="hidden md:flex items-center gap-2 text-sm font-mono list-none">
+                    <li><a href="#home"
+                           class="text-ink-dim hover:text-rose focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg-deep rounded px-3 py-1.5 transition-colors">[ HOME ]</a></li>
+                    <li><a href="#projects"
+                           class="text-ink-dim hover:text-rose focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg-deep rounded px-3 py-1.5 transition-colors">[ PROJECTS ]</a></li>
+                    <li><a href="#contact"
+                           class="text-ink-dim hover:text-rose focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg-deep rounded px-3 py-1.5 transition-colors">[ CONTACT ]</a></li>
+                </ul>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-btn"
+                        class="md:hidden text-ink-dim hover:text-rose focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg-deep rounded p-1"
+                        aria-expanded="false"
+                        aria-controls="mobile-menu"
+                        aria-label="Toggle navigation menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <ul id="mobile-menu" class="hidden md:hidden flex-col gap-1 px-4 pb-3 border-t border-neon/20 text-sm font-mono list-none">
+                <li><a href="#home"      class="block py-2 text-ink-dim hover:text-rose focus:outline-none focus:ring-2 focus:ring-rose rounded px-2">[ HOME ]</a></li>
+                <li><a href="#projects"  class="block py-2 text-ink-dim hover:text-rose focus:outline-none focus:ring-2 focus:ring-rose rounded px-2">[ PROJECTS ]</a></li>
+                <li><a href="#contact"   class="block py-2 text-ink-dim hover:text-rose focus:outline-none focus:ring-2 focus:ring-rose rounded px-2">[ CONTACT ]</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ========== MAIN ========== -->
+    <main id="main-content">
+
+        <!-- ========== HERO ========== -->
+        <section id="home" aria-labelledby="hero-title"
+                 class="relative min-h-screen flex items-center justify-center px-4 pt-24 pb-12">
+
+            <!-- Decorative grid (now soft white at 5%) -->
+            <div class="absolute inset-0 opacity-[0.05] pointer-events-none" aria-hidden="true"
+                 style="background-image: linear-gradient(#7CFF9E 1px, transparent 1px), linear-gradient(90deg, #7CFF9E 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+            <!-- Soft glow blob -->
+            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+                 aria-hidden="true"
+                 style="background: radial-gradient(circle, rgba(255,107,122,0.08) 0%, transparent 70%);"></div>
+
+            <div class="relative z-10 max-w-3xl w-full text-center">
+                <p class="hero-line font-mono text-neon-dim text-xs sm:text-sm mb-3">$ initializing portfolio.exe ...</p>
+
+                <h1 id="hero-title"
+                    class="hero-line font-mono text-3xl sm:text-5xl md:text-6xl font-bold tracking-wider mb-6 text-ink animate-breathe"
+                    style="text-shadow: 0 0 16px rgba(124,255,158,0.25);">
+                    SYSTEM_<span class="text-rose">INITIALIZED</span>
+                </h1>
+
+                <p class="hero-line text-lg sm:text-xl md:text-2xl font-sans text-ink mb-2">
+                    Hello, I'm <span class="text-rose font-semibold">Mahmoud Morsy</span>
+                </p>
+
+                <p class="hero-line text-base sm:text-lg font-sans text-ink-dim mb-10 max-w-xl mx-auto leading-relaxed">
+                    Full-Stack Developer &amp; Security Researcher crafting resilient web applications and breaking things professionally.
+                </p>
+
+                <div class="hero-line flex flex-col sm:flex-row gap-3 justify-center">
+                    <a href="#projects"
+                       class="border border-rose text-rose px-6 py-2.5 hover:bg-rose hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg shadow-rose font-mono text-sm">
+                        &gt; view_projects
+                    </a>
+                    <a href="#contact"
+                       class="border border-neon/50 text-neon px-6 py-2.5 hover:border-neon hover:bg-neon/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-neon focus:ring-offset-2 focus:ring-offset-bg font-mono text-sm">
+                        &gt; contact_me
+                    </a>
+                </div>
+
+                <p class="hero-line mt-12 text-xs text-ink-soft font-mono" aria-hidden="true">
+                    [ Use <kbd class="border border-ink-soft/40 px-1.5 py-0.5 rounded text-ink-dim">Tab</kbd> to navigate ]
+                </p>
+            </div>
+        </section>
+
+        <!-- ========== PROJECTS ========== -->
+        <section id="projects" aria-labelledby="projects-title"
+                 class="relative py-20 px-4 border-t border-neon/15">
+
+            <div class="max-w-6xl mx-auto">
+                <h2 id="projects-title" class="font-mono text-2xl sm:text-3xl font-bold text-ink mb-2 tracking-wider">
+                    <span class="text-rose" aria-hidden="true">$</span> / projects --details
+                </h2>
+                <p class="text-ink-dim text-sm font-sans mb-8">Filter the project grid by category or skill set.</p>
+
+                <!-- Category Filters -->
+                <div class="mb-6" role="group" aria-labelledby="filter-category-label">
+                    <p id="filter-category-label" class="font-mono text-xs text-ink-soft mb-2 uppercase tracking-widest">-- filter by category --</p>
+                    <div class="flex flex-wrap gap-2" id="category-filters">
+                        <button data-category="all" aria-pressed="true"
+                                class="filter-btn px-4 py-1.5 border border-rose bg-rose text-white font-mono font-bold text-sm focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg">
+                            [ ALL ]
+                        </button>
+                        <button data-category="web" aria-pressed="false"
+                                class="filter-btn px-4 py-1.5 border border-rose/60 text-rose hover:bg-rose/15 font-mono text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg">
+                            [ WEB_APPS ]
+                        </button>
+                        <button data-category="security" aria-pressed="false"
+                                class="filter-btn px-4 py-1.5 border border-rose/60 text-rose hover:bg-rose/15 font-mono text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg">
+                            [ SECURITY ]
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Skill Filters -->
+                <div class="mb-10" role="group" aria-labelledby="filter-skill-label">
+                    <p id="filter-skill-label" class="font-mono text-xs text-ink-soft mb-2 uppercase tracking-widest">-- filter by skill --</p>
+                    <div class="flex flex-wrap gap-2" id="skill-filters">
+                        <button data-skill="all" aria-pressed="true"
+                                class="skill-btn px-3 py-1 border border-neon/70 bg-neon/15 text-neon font-mono text-xs font-bold focus:outline-none focus:ring-2 focus:ring-neon focus:ring-offset-2 focus:ring-offset-bg">
+                            ALL
+                        </button>
+                        <button data-skill="html" aria-pressed="false"
+                                class="skill-btn px-3 py-1 border border-neon/40 text-neon-dim hover:border-neon hover:text-neon hover:bg-neon/10 font-mono text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-neon focus:ring-offset-2 focus:ring-offset-bg">
+                            HTML
+                        </button>
+                        <button data-skill="js" aria-pressed="false"
+                                class="skill-btn px-3 py-1 border border-neon/40 text-neon-dim hover:border-neon hover:text-neon hover:bg-neon/10 font-mono text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-neon focus:ring-offset-2 focus:ring-offset-bg">
+                            JS
+                        </button>
+                        <button data-skill="python" aria-pressed="false"
+                                class="skill-btn px-3 py-1 border border-neon/40 text-neon-dim hover:border-neon hover:text-neon hover:bg-neon/10 font-mono text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-neon focus:ring-offset-2 focus:ring-offset-bg">
+                            PYTHON
+                        </button>
+                        <button data-skill="react" aria-pressed="false"
+                                class="skill-btn px-3 py-1 border border-neon/40 text-neon-dim hover:border-neon hover:text-neon hover:bg-neon/10 font-mono text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-neon focus:ring-offset-2 focus:ring-offset-bg">
+                            REACT
+                        </button>
+                        <button data-skill="linux" aria-pressed="false"
+                                class="skill-btn px-3 py-1 border border-neon/40 text-neon-dim hover:border-neon hover:text-neon hover:bg-neon/10 font-mono text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-neon focus:ring-offset-2 focus:ring-offset-bg">
+                            LINUX
+                        </button>
+                        <button data-skill="go" aria-pressed="false"
+                                class="skill-btn px-3 py-1 border border-neon/40 text-neon-dim hover:border-neon hover:text-neon hover:bg-neon/10 font-mono text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-neon focus:ring-offset-2 focus:ring-offset-bg">
+                            GO
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Region for Filter Status -->
+                <p id="filter-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+
+                <!-- Project Grid -->
+                <ul id="project-grid"
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0"
+                    role="list">
+                    <!-- Cards injected by JS -->
+                </ul>
+
+                <!-- Empty State -->
+                <p id="empty-state" class="hidden text-center text-ink-dim font-sans mt-10 border border-neon/20 p-6 rounded">
+                    <span class="text-rose" aria-hidden="true">[!]</span> No projects match the current filter. Try a different combination.
+                </p>
+            </div>
+        </section>
+
+        <!-- ========== CONTACT ========== -->
+        <section id="contact" aria-labelledby="contact-title"
+                 class="relative py-20 px-4 border-t border-neon/15">
+
+            <div class="max-w-2xl mx-auto">
+                <h2 id="contact-title" class="font-mono text-2xl sm:text-3xl font-bold text-ink mb-2 tracking-wider">
+                    <span class="text-rose" aria-hidden="true">$</span> / contact 
+                </h2>
+                <p class="text-ink-dim text-sm font-sans mb-8">Open a connection. Encrypted, of course.</p>
+
+                <form id="contact-form" novalidate
+                      class="space-y-5 border border-neon/20 p-6 bg-bg-card rounded">
+
+                    <div>
+                        <label for="name" class="block font-mono text-xs uppercase tracking-widest text-neon-dim mb-1.5">&gt; Name *</label>
+                        <input type="text" id="name" name="name" required
+                               class="w-full bg-bg-deep border border-neon/30 text-ink px-3 py-2.5 rounded focus:outline-none focus:ring-2 focus:ring-rose focus:border-rose transition-colors placeholder:text-ink-soft font-sans"
+                               placeholder="your name">
+                    </div>
+
+                    <div>
+                        <label for="email" class="block font-mono text-xs uppercase tracking-widest text-neon-dim mb-1.5">&gt; Email *</label>
+                        <input type="email" id="email" name="email" required
+                               class="w-full bg-bg-deep border border-neon/30 text-ink px-3 py-2.5 rounded focus:outline-none focus:ring-2 focus:ring-rose focus:border-rose transition-colors placeholder:text-ink-soft font-sans"
+                               placeholder="your email">
+                    </div>
+
+                    <div>
+                        <label for="message" class="block font-mono text-xs uppercase tracking-widest text-neon-dim mb-1.5">&gt; Message *</label>
+                        <textarea id="message" name="message" rows="5" required
+                                  class="w-full bg-bg-deep border border-neon/30 text-ink px-3 py-2.5 rounded focus:outline-none focus:ring-2 focus:ring-rose focus:border-rose transition-colors placeholder:text-ink-soft font-sans resize-y"
+                                  placeholder="type your message..."></textarea>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full border border-rose bg-rose/90 text-white font-mono font-bold py-2.5 hover:bg-rose transition-colors focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg rounded">
+                        &gt; TRANSMIT
+                    </button>
+
+                    <p id="form-status" class="sr-only" aria-live="polite"></p>
+                </form>
+
+                <div class="mt-8 text-center text-sm text-ink-dim font-sans">
+                    <p>&gt; Or reach Mahmoud at: <a href="mailto:flashrider429@gmail.com" class="text-rose hover:text-rose-soft underline focus:outline-none focus:ring-2 focus:ring-rose focus:ring-offset-2 focus:ring-offset-bg rounded px-1">mahmoud@example.com</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer role="contentinfo" class="border-t border-neon/15 py-6 text-center text-xs text-ink-soft px-4 font-mono">
+        <p>&gt; &copy; <span id="year"></span> <span class="text-ink">Mahmoud Morsy</span></p>
+        
+    </footer>
+
+    <!-- Project JS -->
+    <script src="script.js"></script>
+</body>
+</html>
