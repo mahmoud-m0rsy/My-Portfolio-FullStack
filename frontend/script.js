@@ -9,90 +9,7 @@
     'use strict';
 
     /* ---------- 1. Project data (10 entries) ---------- */
-    const projects = [
-        // Web Apps
-        {
-            id: 1,
-            title: 'NEXUS_DASHBOARD',
-            category: 'web',
-            skills: ['html', 'js'],
-            description: 'A real-time analytics dashboard with terminal-style UI, live data charts, and WebSocket feeds.',
-            link: '#'
-        },
-        {
-            id: 2,
-            title: 'CIPHER_CHAT',
-            category: 'web',
-            skills: ['js', 'react'],
-            description: 'End-to-end encrypted messaging prototype built with React and the Web Crypto API.',
-            link: '#'
-        },
-        {
-            id: 3,
-            title: 'GHOST_MART',
-            category: 'web',
-            skills: ['html', 'js', 'react'],
-            description: 'Anonymous e-commerce front-end with stealth-mode toggle and onion-routing notes.',
-            link: '#'
-        },
-        {
-            id: 4,
-            title: 'PULSE_API',
-            category: 'web',
-            skills: ['go', 'js'],
-            description: 'High-throughput REST API in Go serving telemetry from IoT devices with sub-10ms p99 latency.',
-            link: '#'
-        },
-        {
-            id: 5,
-            title: 'AURORA_CMS',
-            category: 'web',
-            skills: ['html', 'js', 'react'],
-            description: 'A headless CMS with a markdown-first editor, role-based access, and a clean admin panel.',
-            link: '#'
-        },
-        // Security
-        {
-            id: 6,
-            title: 'PHANTOM_SCANNER',
-            category: 'security',
-            skills: ['python', 'linux'],
-            description: 'Network reconnaissance tool that maps exposed services and flags misconfigured hosts.',
-            link: '#'
-        },
-        {
-            id: 7,
-            title: 'ZERO_DAY_FUZZER',
-            category: 'security',
-            skills: ['python'],
-            description: 'A targeted input-fuzzing harness for binary parsers, built around coverage-guided mutation.',
-            link: '#'
-        },
-        {
-            id: 8,
-            title: 'ROOTKIT_HUNTER',
-            category: 'security',
-            skills: ['linux', 'python'],
-            description: 'Linux kernel integrity monitor that surfaces hidden processes, modules, and persistence hooks.',
-            link: '#'
-        },
-        {
-            id: 9,
-            title: 'CIPHER_AUDIT',
-            category: 'security',
-            skills: ['go', 'linux'],
-            description: 'Static analyzer for Go services that detects common crypto misuse and unsafe deserialization patterns.',
-            link: '#'
-        },
-        {
-            id: 10,
-            title: 'SPECTER_VPN',
-            category: 'security',
-            skills: ['go', 'linux'],
-            description: 'A minimal WireGuard-based mesh VPN prototype with hardware-key authentication.',
-            link: '#'
-        }
-    ];
+    let projects = [];
 
     /* ---------- 2. State for combined filtering ---------- */
     const state = {
@@ -283,7 +200,7 @@
     }
 
     /* ---------- 9. Contact form ---------- */
-    function handleContactSubmit(e) {
+    async function handleContactSubmit(e) {
         e.preventDefault();
         const name    = contactForm.name.value.trim();
         const email   = contactForm.email.value.trim();
@@ -299,8 +216,27 @@
             return;
         }
 
-        formStatus.textContent = `Success: Message transmitted by ${name}.`;
-        contactForm.reset();
+        formStatus.textContent = 'Sending message...';
+
+        try {
+            const response = await fetch('http://localhost:5000/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, message })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                formStatus.textContent = `Success: Message transmitted by ${name}.`;
+                contactForm.reset();
+            } else {
+                formStatus.textContent = 'Error: Failed to send message.';
+            }
+        } catch (error) {
+            console.error("Error sending message:", error);
+            formStatus.textContent = 'Error: Server is unreachable.';
+        }
     }
 
     /* ---------- 10. Event wiring ---------- */
@@ -325,10 +261,21 @@
     }
 
     /* ---------- 11. Boot ---------- */
+    async function fetchProjectsFromServer() {
+        try {
+            const response = await fetch('http://localhost:5000/api/projects');
+            const data = await response.json();
+            projects = data;
+            renderProjects();
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+        }
+    }
+
     function init() {
         if (yearEl) yearEl.textContent = new Date().getFullYear();
         wireEvents();
-        renderProjects();
+        fetchProjectsFromServer();
         animateHero();
         initScrollAnimations();
     }
