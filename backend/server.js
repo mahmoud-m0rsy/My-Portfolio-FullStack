@@ -91,53 +91,44 @@ const projects = [
   }
 ];
 
+// GET: Projects
 app.get('/api/projects', (req, res) => {
   res.json(projects);
 });
 
+// POST: Contact Form -> Telegram
+app.post('/api/contact', async (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  const telegramToken = process.env.TELEGRAM_TOKEN || "8610109784:AAEy0VSw83nZjBUwqoOrb1MG0gRxv8JftDc";
+  const chatId = process.env.CHAT_ID || "8915174122";
+
+  const text = `📬 *New Portfolio Message*\n\n👤 *Name:* ${name}\n📧 *Email:* ${email}\n💬 *Message:* ${message}`;
+
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text,
+        parse_mode: 'Markdown'
+      })
+    });
+
+    const telegramData = await response.json();
+    res.json({ success: true, message: "Message transmitted successfully" });
+  } catch (error) {
+    console.error("Telegram API Error:", error);
+    res.status(500).json({ error: "Failed to send message to Telegram" });
+  }
+});
+
+// Start Server
 app.listen(PORT, () => {
   console.log(`Server is running smoothly on port ${PORT}`);
-});
-
-app.get('/api/projects', (req, res) => {
-    res.json(projects);
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running smoothly on port ${PORT}`);
-});
-
-app.post('/api/contact', async (req, res) => {
-    const { name, email, message } = req.body;
-
-    if (!name || !email || !message) {
-        return res.status(400).json({ error: "All fields are required" });
-    }
-
-    console.log("New Message Received:", { name, email, message });
-
-    const telegramToken = "8610109784:AAEy0VSw83nZjBUwqoOrb1MG0gRxv8JftDc";
-    const chatId = "8915174122";
-    
-    const text = `📬 *New Portfolio Message*\n\n👤 *Name:* ${name}\n📧 *Email:* ${email}\n💬 *Message:* ${message}`;
-
-    try {
-        const response = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: text,
-                parse_mode: 'Markdown'
-            })
-        });
-
-        const telegramData = await response.json();
-        console.log("Telegram Response:", telegramData);
-
-        res.json({ success: true, message: "Message transmitted successfully" });
-    } catch (error) {
-        console.error("Telegram API Error:", error);
-        res.status(500).json({ error: "Failed to send message to Telegram" });
-    }
 });
