@@ -216,7 +216,7 @@
         formStatus.textContent = 'Sending message...';
 
         try {
-            const response = await fetch('http://localhost:5000/api/contact', {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, message })
@@ -260,7 +260,7 @@
     /* ---------- 11. Boot ---------- */
     async function fetchProjectsFromServer() {
         try {
-            const response = await fetch('http://localhost:5000/api/projects');
+            const response = await fetch('/api/projects');
             const data = await response.json();
             projects = data;
             renderProjects();
