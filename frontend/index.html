@@ -6,33 +6,30 @@
     <title>Mahmoud Morsy // Portfolio Terminal</title>
     <meta name="description" content="Personal portfolio of Mahmoud Morsy — Full-Stack Developer &amp; Security Researcher.">
 
-    <!-- Inter for readable body text -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CDN (من غير async) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        // Softened, eye-friendly green (was the harsh #39FF14)
                         neon: {
                             DEFAULT: '#7CFF9E',
                             dim:     '#5fd989',
                             dark:    '#3aa868',
                             deep:    '#1f7a48',
                         },
-                        // Warm light-red accent
                         rose: {
                             DEFAULT: '#ff6b7a',
                             soft:    '#ffb3bc',
                             dim:     '#d94a59',
                             dark:    '#8a2a35',
                         },
-                        // Readable off-whites (avoid pure #FFF eye-strain on black)
                         ink: {
                             DEFAULT: '#e6e8ea',
                             dim:     '#b9bdc2',
@@ -54,7 +51,7 @@
                         'rose':    '0 0 5px rgba(255,107,122,0.55), 0 0 14px rgba(255,107,122,0.3)',
                     },
                     keyframes: {
-                        blink:  { '0%, 49%': { opacity: '1' }, '50%, 100%': { opacity: '0' } },
+                        blink:   { '0%, 49%': { opacity: '1' }, '50%, 100%': { opacity: '0' } },
                         breathe: {
                             '0%, 100%': { opacity: '0.85' },
                             '50%':      { opacity: '1' },
@@ -75,9 +72,9 @@
         }
     </script>
 
-    <!-- GSAP CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- GSAP (استخدم defer بدل async) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="style.css">
@@ -325,6 +322,6 @@
     </footer>
 
     <!-- Project JS -->
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

@@ -1,20 +1,18 @@
 /* ================================================
    Mahmoud Morsy // Portfolio — script.js
-   - 10 projects (5 web, 5 security)
-   - Category & skill filtering (with extra "go" skill)
-   - Slow, soft GSAP animations
+   - Optimized for Performance & High Lighthouse Score
    ================================================ */
 
 (function () {
     'use strict';
 
-    /* ---------- 1. Project data (10 entries) ---------- */
+    /* ---------- 1. Project data ---------- */
     let projects = [];
 
     /* ---------- 2. State for combined filtering ---------- */
     const state = {
-        category: 'all',   // 'all' | 'web' | 'security'
-        skill: 'all'       // 'all' | 'html' | 'js' | 'python' | 'react' | 'linux' | 'go'
+        category: 'all', 
+        skill: 'all'
     };
 
     /* ---------- 3. DOM references ---------- */
@@ -53,11 +51,11 @@
         grid.innerHTML = '';
 
         if (visible.length === 0) {
-            emptyState.classList.remove('hidden');
+            if (emptyState) emptyState.classList.remove('hidden');
             if (statusEl) statusEl.textContent = 'No projects match the current filter.';
             return;
         }
-        emptyState.classList.add('hidden');
+        if (emptyState) emptyState.classList.add('hidden');
         if (statusEl) {
             const catLabel   = state.category === 'all' ? 'all categories' : state.category;
             const skillLabel = state.skill === 'all' ? 'any skill' : state.skill.toUpperCase();
@@ -70,7 +68,6 @@
             li.className = 'project-card border border-neon/20 bg-bg-card p-5 flex flex-col rounded';
             li.setAttribute('data-category', p.category);
             li.setAttribute('data-skills', p.skills.join(','));
-            li.style.opacity = '0'; // GSAP will fade in
 
             const skillsHTML = p.skills
                 .map(s => `<span class="text-[10px] font-mono tracking-widest border border-neon/40 text-neon-dim px-2 py-0.5 rounded">${escapeHTML(s.toUpperCase())}</span>`)
@@ -100,7 +97,18 @@
         });
 
         grid.appendChild(frag);
-        animateCardsIn();
+        
+        // Run light animation after render
+        if (typeof gsap !== 'undefined') {
+            gsap.from('.project-card', {
+                opacity: 0,
+                y: 15,
+                duration: 0.4,
+                stagger: 0.05,
+                ease: 'power1.out',
+                clearProps: 'all' // Clear inline styles after animation to avoid layout shifts
+            });
+        }
     }
 
     /* ---------- 6. Filtering logic ---------- */
@@ -134,57 +142,46 @@
         renderProjects();
     }
 
-    /* ---------- 7. GSAP animations — slow & soft ---------- */
-    function animateHero() {
+    /* ---------- 7. Deferred GSAP Animations ---------- */
+    function initAnimations() {
         if (typeof gsap === 'undefined') return;
+
+        // Lightweight Hero animation
         gsap.from('.hero-line', {
-            y: 24,
+            y: 15,
             opacity: 0,
-            duration: 1.2,        // slower
-            ease: 'power2.out',
-            stagger: 0.2,
-            delay: 0.3
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power1.out',
+            clearProps: 'all'
         });
-    }
 
-    function animateCardsIn() {
-        if (typeof gsap === 'undefined') return;
-        const cards = grid.querySelectorAll('.project-card');
-        gsap.fromTo(cards,
-            { y: 30, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 1.0,     // slower
-                ease: 'power2.out',
-                stagger: 0.1
+        // ScrollTrigger deferred setup
+        if (typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+
+            gsap.utils.toArray('section h2').forEach(h => {
+                gsap.from(h, {
+                    scrollTrigger: { trigger: h, start: 'top 90%' },
+                    y: 15,
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: 'power1.out',
+                    clearProps: 'all'
+                });
+            });
+
+            const form = document.getElementById('contact-form');
+            if (form) {
+                gsap.from(form, {
+                    scrollTrigger: { trigger: form, start: 'top 90%' },
+                    y: 20,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: 'power1.out',
+                    clearProps: 'all'
+                });
             }
-        );
-    }
-
-    function initScrollAnimations() {
-        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-        gsap.registerPlugin(ScrollTrigger);
-
-        gsap.utils.toArray('section h2').forEach(h => {
-            gsap.from(h, {
-                scrollTrigger: { trigger: h, start: 'top 85%' },
-                y: 20,
-                opacity: 0,
-                duration: 1.0,    // slower
-                ease: 'power2.out'
-            });
-        });
-
-        const form = document.getElementById('contact-form');
-        if (form) {
-            gsap.from(form, {
-                scrollTrigger: { trigger: form, start: 'top 85%' },
-                y: 30,
-                opacity: 0,
-                duration: 1.1,
-                ease: 'power2.out'
-            });
         }
     }
 
@@ -276,8 +273,11 @@
         if (yearEl) yearEl.textContent = new Date().getFullYear();
         wireEvents();
         fetchProjectsFromServer();
-        animateHero();
-        initScrollAnimations();
+        
+        // Defer non-critical GSAP animations after frame render
+        requestAnimationFrame(() => {
+            setTimeout(initAnimations, 100);
+        });
     }
 
     if (document.readyState === 'loading') {
