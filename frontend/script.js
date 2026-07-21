@@ -6,6 +6,9 @@
 (function () {
     'use strict';
 
+    /* ---------- Base API URL ---------- */
+    const API_BASE_URL = 'https://my-portfolio-full-stack-3y16.vercel.app';
+
     /* ---------- 1. Project data ---------- */
     let projects = [];
 
@@ -216,7 +219,7 @@
         formStatus.textContent = 'Sending message...';
 
         try {
-            const response = await fetch('/api/contact', {
+            const response = await fetch(`${API_BASE_URL}/api/contact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, message })
@@ -260,7 +263,7 @@
     /* ---------- 11. Boot ---------- */
     async function fetchProjectsFromServer() {
         try {
-            const response = await fetch('/api/projects');
+            const response = await fetch(`${API_BASE_URL}/api/projects`);
             const data = await response.json();
             projects = data;
             renderProjects();
